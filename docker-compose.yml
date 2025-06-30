@@ -47,6 +47,36 @@ services:
     networks:
       - mosquitto-network
 
+  mqtt-admin:
+    image: smeagolworms4/mqtt-admin
+    container_name: mqtt-admin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      - MQTT_HOST=mosquitto
+      - MQTT_PORT=1883
+      - MQTT_USERNAME=
+      - MQTT_PASSWORD=
+    depends_on:
+      - mosquitto
+    networks:
+      - mosquitto-network
+
+  hivemq-webui:
+    image: hivemq/hivemq-web-ui:1.0.0
+    container_name: hivemq-webui
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - MQTT_BROKER_HOST=mosquitto
+      - MQTT_BROKER_PORT=1883
+    depends_on:
+      - mosquitto
+    networks:
+      - mosquitto-network
+
 volumes:
   mosquitto_data:
     driver: local
