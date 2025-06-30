@@ -9,10 +9,41 @@ services:
       - "1883:1883"
       - "9001:9001"
     volumes:
-      - ./config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
       - mosquitto_data:/mosquitto/data
       - mosquitto_logs:/mosquitto/log
-    user: "1883:1883"
+    command: |
+      sh -c "
+      mkdir -p /mosquitto/config &&
+      cat > /mosquitto/config/mosquitto.conf << 'EOF'
+      listener 1883
+      protocol mqtt
+      
+      listener 9001
+      protocol websockets
+      
+      allow_anonymous true
+      
+      log_dest stdout
+      log_type error
+      log_type warning
+      log_type notice
+      log_type information
+      log_timestamp true
+      
+      persistence true
+      persistence_location /mosquitto/data/
+      autosave_interval 1800
+      
+      max_connections 1000
+      max_queued_messages 1000
+      max_inflight_messages 20
+      
+      connection_messages true
+      log_type subscribe
+      log_type unsubscribe
+      EOF
+      mosquitto -c /mosquitto/config/mosquitto.conf
+      "
     networks:
       - mosquitto-network
 
