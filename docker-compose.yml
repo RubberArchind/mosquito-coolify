@@ -5,9 +5,9 @@ services:
     image: eclipse-mosquitto:2.0
     container_name: mosquitto-broker
     restart: unless-stopped
-    ports:
-      - "1883:1883"
-      - "9001:9001"
+    # ports:
+    #   - "1883:1883"
+    #   - "9001:9001"
     volumes:
       - mosquitto_data:/mosquitto/data
       - mosquitto_logs:/mosquitto/log
@@ -51,8 +51,8 @@ services:
     image: vergissberlin/hivemq-mqtt-web-client
     container_name: mqtt-web-ui
     restart: unless-stopped
-    ports:
-      - "8080:80"
+    # ports:
+    #   - "8080:80"
     environment:
       - MQTT_HOST=mosquitto
       - MQTT_PORT=1883
